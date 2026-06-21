@@ -88,42 +88,48 @@
 
 <script>
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://kxfvygnmcgvzsizwwlop.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_KPc7MdTlw9p79t1YGboASg_y94Ct98v";
 
 const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+SUPABASE_URL,
+SUPABASE_KEY
 );
+
+console.log("Supabase Connected");
 
 let allData = [];
 
 async function loadTrainingData() {
 
-    document.getElementById("loading").classList.remove("hidden");
+document.getElementById("loading").classList.remove("hidden");
 
-    const { data, error } = await supabaseClient
-        .from("trainingdata")
-        .select("*")
-        .order("id", { ascending: true });
+const { data, error } = await supabaseClient
+    .from("trainingdata")
+    .select("*");
 
-    document.getElementById("loading").classList.add("hidden");
+console.log("DATA:", data);
+console.log("ERROR:", error);
 
-    if (error) {
+document.getElementById("loading").classList.add("hidden");
 
-        document.getElementById("trainingContainer").innerHTML = `
-            <div class="text-red-600 font-semibold">
-                Failed to load data
-            </div>
-        `;
+if (error) {
 
-        console.error(error);
-        return;
-    }
+    document.getElementById("trainingContainer").innerHTML = `
+        <div class="text-red-600 font-semibold">
+            Failed to load data: ${error.message}
+        </div>
+    `;
 
-    allData = data;
+    return;
+}
 
-    renderCards(allData);
+allData = data || [];
+
+renderCards(allData);
+
 }
 
 function renderCards(data) {
