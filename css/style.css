@@ -353,3 +353,20 @@ a:hover {
     color: #024ea2;
 
 }
+#logoutBtn{
+
+color:white;
+
+text-decoration:none;
+
+font-size:14px;
+
+}
+
+#logoutBtn:hover{
+
+text-decoration:underline;
+
+cursor:pointer;
+
+}
