@@ -90,21 +90,25 @@ auth.onAuthStateChanged((user)=>{
 
         console.log(user.email);
 
-        if(window.location.pathname.includes("index.html")){
+const path = window.location.pathname;
 
-            if(user.email===ADMIN_EMAIL){
+// Only redirect from the home page
+if (
+    path.endsWith("/") ||
+    path.endsWith("/index.html")
+) {
 
-                window.location.href="admin.html";
+    if (user.email === ADMIN_EMAIL) {
 
-            }
+        window.location.href = "admin.html";
 
-            else{
+    } else {
 
-                window.location.href="profile.html";
+        window.location.href = "profile.html";
 
-            }
+    }
 
-        }
+}
 
     }
 
