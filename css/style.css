@@ -277,3 +277,64 @@ footer {
     }
 
 }
+/* ============================= */
+/* Active Navigation */
+/* ============================= */
+
+nav a.active {
+
+    background: white;
+
+    color: #0366d6;
+
+    font-weight: bold;
+
+}
+
+/* ============================= */
+/* About Page */
+/* ============================= */
+
+.about-section {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,.1);
+
+}
+
+.about-section h3 {
+
+    margin-top: 25px;
+
+    margin-bottom: 10px;
+
+    color: #0366d6;
+
+}
+
+.about-section p {
+
+    margin-bottom: 15px;
+
+    line-height: 1.7;
+
+}
+
+.about-section ul {
+
+    margin-left: 20px;
+
+    margin-top: 10px;
+
+}
+
+.about-section li {
+
+    margin-bottom: 10px;
+
+}
