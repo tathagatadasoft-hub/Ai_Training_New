@@ -4,7 +4,7 @@ Admin Dashboard
 =====================================
 */
 
-const ADMIN_EMAIL = "YOUR_GMAIL@gmail.com";
+const ADMIN_EMAIL = "tathagata.dasoft@gmail.com";
 
 auth.onAuthStateChanged((user) => {
 
