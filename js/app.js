@@ -1,3 +1,4 @@
+import { firestoreDB } from "./config.js";
 /*
 =========================================
 GitHub Training Portal
