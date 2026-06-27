@@ -399,3 +399,44 @@ margin-bottom:20px;
 border:4px solid #0366d6;
 
 }
+/* ============================= */
+/* Admin Dashboard */
+/* ============================= */
+
+.dashboard-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 20px;
+
+    margin-top: 30px;
+
+}
+
+.dashboard-card {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+
+}
+
+.dashboard-card h3 {
+
+    margin-bottom: 15px;
+
+    color: #0366d6;
+
+}
+
+.dashboard-card p {
+
+    margin-bottom: 20px;
+
+}
