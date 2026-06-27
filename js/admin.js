@@ -68,36 +68,142 @@ document.addEventListener("click", (event) => {
 
 });
 
-function showManageCourses() {
+async function showManageCourses(){
 
-    document.getElementById("adminContent").innerHTML = `
+document.getElementById("courseSection").style.display="block";
 
-        <h2>Course Management</h2>
+loadCourses();
 
-        <p>This section will allow you to:</p>
+}
+/*
+====================================
+Load Courses
+====================================
+*/
 
-        <ul>
+async function loadCourses(){
 
-            <li>Add New Course</li>
+const container=document.getElementById("courseList");
 
-            <li>Edit Course</li>
+container.innerHTML="Loading...";
 
-            <li>Delete Course</li>
+const {data,error}=await supabaseClient
 
-        </ul>
+.from("trainingdata")
 
-        <br>
+.select("*")
 
-        <button id="btnAddCourse" class="btn">
+.order("id",{ascending:false});
 
-            Add New Course
+if(error){
 
-        </button>
+container.innerHTML=error.message;
 
-    `;
+return;
 
 }
 
+container.innerHTML="";
+
+data.forEach(course=>{
+
+container.innerHTML+=`
+
+<div class="card">
+
+<h3>${course.title}</h3>
+
+<p>${course.desc}</p>
+
+<p>
+
+<strong>${course.tech}</strong>
+
+</p>
+
+<a
+
+class="btn"
+
+href="${course.link}"
+
+target="_blank">
+
+Open
+
+</a>
+
+<button
+
+class="btn delete-btn"
+
+onclick="deleteCourse(${course.id})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+/*
+====================================
+Delete Course
+====================================
+*/
+
+async function deleteCourse(id){
+
+if(
+
+!confirm("Delete this course?")
+
+){
+
+return;
+
+}
+
+const {error}=await supabaseClient
+
+.from("trainingdata")
+
+.delete()
+
+.eq("id",id);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+loadCourses();
+
+}
+document.addEventListener(
+
+"click",
+
+function(event){
+
+if(
+
+event.target.id==="btnSaveCourse"
+
+){
+
+saveCourse();
+
+}
+
+});
 function showReviews() {
 
     document.getElementById("adminContent").innerHTML = `
