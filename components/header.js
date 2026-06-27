@@ -43,14 +43,16 @@ class="user-photo">
 
 <div>
 
-<span id="userName"></span>
+<div
+id="userName">
 
-<br>
+</div>
 
 <a
-href="profile.html">
+href="#"
+id="logoutBtn">
 
-My Profile
+Logout
 
 </a>
 
