@@ -1,203 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Welcome to GitHub Training from Web</title>
 
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #f4f7fb;
-            color: #333;
-        }
-
-        header {
-            background: linear-gradient(135deg, #24292e, #0366d6);
-            color: white;
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1.2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 40px 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #24292e;
-        }
-
-        #training-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform .2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            color: #0366d6;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .tech {
-            display: inline-block;
-            background: #e8f0fe;
-            color: #0366d6;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #0366d6;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-        }
-
-        .btn:hover {
-            background: #024ea2;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            background: #24292e;
-            color: white;
-            margin-top: 50px;
-        }
-
-        .loading {
-            text-align: center;
-            font-size: 20px;
-            padding: 40px;
-        }
-    </style>
 </head>
+
 <body>
 
-    <header>
-        <h1>Welcome to GitHub Training from Web</h1>
-        <p>Learn GitHub, DevOps, Cloud and Modern Technologies</p>
-    </header>
+<header>
 
-    <div class="container">
+    <h1>Welcome to GitHub Training from Web</h1>
 
-        <h2 class="section-title">Available Training Programs</h2>
+    <p>Learn GitHub, DevOps, Cloud and Modern Technologies</p>
 
-        <div id="training-list">
-            <div class="loading">Loading training data...</div>
+    <nav>
+
+        <a href="index.html">Home</a>
+
+        <a href="about.html">About</a>
+
+        <a href="contact.html">Contact</a>
+
+    </nav>
+
+</header>
+
+<div class="container">
+
+    <h2 class="section-title">
+
+        Available Training Programs
+
+    </h2>
+
+    <div id="training-list">
+
+        <div class="loading">
+
+            Loading training data...
+
         </div>
 
     </div>
 
-    <footer>
-        © 2026 GitHub Training Portal
-    </footer>
+</div>
 
-    <script>
+<footer>
 
-const SUPABASE_URL = "https://kxfvygnmcgvzsizwwlop.supabase.co";
+    © 2026 GitHub Training Portal
 
-const SUPABASE_KEY = "sb_publishable_KPc7MdTlw9p79t1YGboASg_y94Ct98v";
+</footer>
 
-const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+<script src="js/config.js"></script>
 
-        async function loadTrainingData() {
+<script src="js/common.js"></script>
 
-            const { data, error } = await supabaseClient
-                .from('trainingdata')
-                .select('*')
-                .order('id', { ascending: true });
-
-            const container = document.getElementById('training-list');
-
-            if (error) {
-                console.error(error);
-
-                container.innerHTML = `
-                    <div class="card">
-                        <h3>Error Loading Data</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = '';
-
-            data.forEach(item => {
-
-                container.innerHTML += `
-                    <div class="card">
-                        <h3>${item.title}</h3>
-
-                        <p>${item.desc || ''}</p>
-
-                        <div class="tech">
-                            ${item.tech || ''}
-                        </div>
-
-                        <br>
-
-                        <a
-                            class="btn"
-                            href="${item.link}"
-                            target="_blank"
-                        >
-                            Open Training
-                        </a>
-                    </div>
-                `;
-            });
-        }
-
-        loadTrainingData();
-
-    </script>
+<script src="js/app.js"></script>
 
 </body>
+
 </html>
