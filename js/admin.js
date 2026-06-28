@@ -81,73 +81,90 @@ Load Courses
 ====================================
 */
 
-async function loadCourses(){
+async function loadCourses() {
 
-const container=document.getElementById("courseList");
+    const tbody = document.getElementById("courseList");
 
-container.innerHTML="Loading...";
+    tbody.innerHTML = "";
 
-const {data,error}=await supabaseClient
+    const { data, error } = await supabaseClient
+        .from("trainingdata")
+        .select("*")
+        .order("id", { ascending: false });
 
-.from("trainingdata")
+    if (error) {
 
-.select("*")
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5">${error.message}</td>
+            </tr>
+        `;
 
-.order("id",{ascending:false});
+        return;
+    }
 
-if(error){
+    if (data.length === 0) {
 
-container.innerHTML=error.message;
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5">No courses found.</td>
+            </tr>
+        `;
 
-return;
+        return;
+    }
 
-}
+    data.forEach(course => {
 
-container.innerHTML="";
+        tbody.innerHTML += `
 
-data.forEach(course=>{
+            <tr>
 
-container.innerHTML+=`
+                <td>${course.title}</td>
 
-<div class="card">
+                <td>${course.tech || ""}</td>
 
-<h3>${course.title}</h3>
+                <td>
 
-<p>${course.desc}</p>
+                    <a
+                        href="${course.link}"
+                        target="_blank">
 
-<p>
+                        Open
 
-<strong>${course.tech}</strong>
+                    </a>
 
-</p>
+                </td>
 
-<a
+                <td>
 
-class="btn"
+                    <button
+                        class="btn edit-btn"
+                        onclick="editCourse(${course.id})">
 
-href="${course.link}"
+                        Edit
 
-target="_blank">
+                    </button>
 
-Open
+                </td>
 
-</a>
+                <td>
 
-<button
+                    <button
+                        class="btn delete-btn"
+                        onclick="deleteCourse(${course.id})">
 
-class="btn delete-btn"
+                        Delete
 
-onclick="deleteCourse(${course.id})">
+                    </button>
 
-Delete
+                </td>
 
-</button>
+            </tr>
 
-</div>
+        `;
 
-`;
-
-});
+    });
 
 }
 /*
