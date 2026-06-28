@@ -1,7 +1,25 @@
 /*
-=========================================
+==========================================================
+GitHub Training Portal
 Admin Dashboard
-=========================================
+Version 2.0
+==========================================================
+*/
+
+/*
+==========================================================
+Global Variables
+==========================================================
+*/
+
+let currentUser = null;
+
+let editingCourseId = null;
+
+/*
+==========================================================
+Authentication
+==========================================================
 */
 
 auth.onAuthStateChanged(async (user) => {
@@ -9,172 +27,259 @@ auth.onAuthStateChanged(async (user) => {
     if (!user) {
 
         window.location.href = "index.html";
+
         return;
 
     }
 
-    if (user.email !== ADMIN_EMAIL) {
+    currentUser = user;
+
+    const { data, error } = await supabaseClient
+
+        .from("users")
+
+        .select("role")
+
+        .eq("firebase_uid", user.uid)
+
+        .single();
+
+    if (error) {
+
+        console.error(error);
+
+        alert("Unable to verify user.");
+
+        window.location.href = "index.html";
+
+        return;
+
+    }
+
+    if (data.role !== "admin") {
 
         alert("Access Denied");
+
         window.location.href = "profile.html";
+
         return;
 
     }
 
-    loadDashboard();
+    initializeDashboard();
 
 });
 
 /*
-=========================================
+==========================================================
+Initialize Dashboard
+==========================================================
+*/
+
+function initializeDashboard() {
+
+    registerEvents();
+
+    showDashboard();
+
+}
+
+/*
+==========================================================
+Register Events
+==========================================================
+*/
+
+function registerEvents() {
+
+    document
+
+        .getElementById("menuDashboard")
+
+        .addEventListener("click", showDashboard);
+
+    document
+
+        .getElementById("menuCourses")
+
+        .addEventListener("click", showCourses);
+
+    document
+
+        .getElementById("menuReviews")
+
+        .addEventListener("click", showReviews);
+
+    document
+
+        .getElementById("menuUsers")
+
+        .addEventListener("click", showUsers);
+
+    document
+
+        .getElementById("btnSaveCourse")
+
+        .addEventListener("click", saveCourse);
+
+    document
+
+        .getElementById("btnCancelEdit")
+
+        .addEventListener("click", cancelEdit);
+
+}
+
+/*
+==========================================================
+Hide All Sections
+==========================================================
+*/
+
+function hideAllSections() {
+
+    document
+
+        .getElementById("dashboardSection")
+
+        .style.display = "none";
+
+    document
+
+        .getElementById("courseSection")
+
+        .style.display = "none";
+
+    document
+
+        .getElementById("reviewSection")
+
+        .style.display = "none";
+
+    document
+
+        .getElementById("userSection")
+
+        .style.display = "none";
+
+}
+
+/*
+==========================================================
 Dashboard
-=========================================
+==========================================================
 */
 
-function loadDashboard() {
+async function showDashboard() {
 
-    showSection("dashboardSection");
+    hideAllSections();
 
-    loadDashboardCounts();
+    document
+
+        .getElementById("dashboardSection")
+
+        .style.display = "block";
+
+    await loadStatistics();
 
 }
 
 /*
-=========================================
-Sidebar Navigation
-=========================================
+==========================================================
+Dashboard Statistics
+==========================================================
 */
 
-document.addEventListener("click", function (event) {
+async function loadStatistics() {
 
-    switch (event.target.id) {
+    const courseResult = await supabaseClient
 
-        case "menuDashboard":
-
-            showSection("dashboardSection");
-            loadDashboardCounts();
-            break;
-
-        case "menuCourses":
-
-            showSection("courseSection");
-            loadCourses();
-            break;
-
-        case "menuReviews":
-
-            showSection("reviewSection");
-            loadReviews();
-            break;
-
-        case "menuUsers":
-
-            showSection("userSection");
-            loadUsers();
-            break;
-
-    }
-
-});
-
-/*
-=========================================
-Show Section
-=========================================
-*/
-
-function showSection(sectionId) {
-
-    document.getElementById("dashboardSection").style.display = "none";
-    document.getElementById("courseSection").style.display = "none";
-    document.getElementById("reviewSection").style.display = "none";
-    document.getElementById("userSection").style.display = "none";
-
-    document.getElementById(sectionId).style.display = "block";
-
-}
-
-/*
-=========================================
-Dashboard Counts
-=========================================
-*/
-
-async function loadDashboardCounts() {
-
-    const courses = await supabaseClient
         .from("trainingdata")
-        .select("*", { count: "exact", head: true });
 
-    const users = await supabaseClient
+        .select("*", {
+
+            count: "exact",
+
+            head: true
+
+        });
+
+    document
+
+        .getElementById("totalCourses")
+
+        .innerHTML = courseResult.count || 0;
+
+    const userResult = await supabaseClient
+
         .from("users")
-        .select("*", { count: "exact", head: true });
 
-    let reviewsCount = 0;
+        .select("*", {
+
+            count: "exact",
+
+            head: true
+
+        });
+
+    document
+
+        .getElementById("totalUsers")
+
+        .innerHTML = userResult.count || 0;
+
+    let reviewCount = 0;
 
     try {
 
-        const reviews = await supabaseClient
+        const reviewResult = await supabaseClient
+
             .from("reviews")
-            .select("*", { count: "exact", head: true });
 
-        reviewsCount = reviews.count || 0;
+            .select("*", {
 
-    } catch {
+                count: "exact",
 
-        reviewsCount = 0;
+                head: true
+
+            });
+
+        reviewCount = reviewResult.count || 0;
 
     }
 
-    document.getElementById("totalCourses").innerHTML =
-        courses.count || 0;
+    catch {
 
-    document.getElementById("totalUsers").innerHTML =
-        users.count || 0;
+        reviewCount = 0;
 
-    document.getElementById("totalReviews").innerHTML =
-        reviewsCount;
+    }
+
+    document
+
+        .getElementById("totalReviews")
+
+        .innerHTML = reviewCount;
 
 }
 
 /*
-=========================================
-Placeholder Functions
-=========================================
+==========================================================
+Course Management
+==========================================================
 */
 
-async function loadCourses() {
+async function showCourses() {
 
-    document.getElementById("courseList").innerHTML = `
-        <tr>
-            <td colspan="5">
-                Loading Courses...
-            </td>
-        </tr>
-    `;
+    hideAllSections();
 
-}
+    document
 
-async function loadReviews() {
+        .getElementById("courseSection")
 
-    document.getElementById("reviewList").innerHTML = `
-        <tr>
-            <td colspan="5">
-                Loading Reviews...
-            </td>
-        </tr>
-    `;
+        .style.display = "block";
 
-}
+    clearCourseForm();
 
-async function loadUsers() {
-
-    document.getElementById("userList").innerHTML = `
-        <tr>
-            <td colspan="6">
-                Loading Users...
-            </td>
-        </tr>
-    `;
+    await loadCourses();
 
 }
