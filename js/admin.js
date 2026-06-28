@@ -1,19 +1,14 @@
-alert("admin.js loaded");
-
 /*
-=====================================
+=========================================
 Admin Dashboard
-=====================================
+=========================================
 */
 
-const ADMIN_EMAIL = "tathagata.dasoft@gmail.com";
-
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
 
     if (!user) {
 
         window.location.href = "index.html";
-
         return;
 
     }
@@ -21,9 +16,7 @@ auth.onAuthStateChanged((user) => {
     if (user.email !== ADMIN_EMAIL) {
 
         alert("Access Denied");
-
         window.location.href = "profile.html";
-
         return;
 
     }
@@ -32,233 +25,156 @@ auth.onAuthStateChanged((user) => {
 
 });
 
+/*
+=========================================
+Dashboard
+=========================================
+*/
+
 function loadDashboard() {
 
-    console.log("Admin Dashboard Loaded");
+    showSection("dashboardSection");
+
+    loadDashboardCounts();
 
 }
 
 /*
-=====================================
-Buttons
-=====================================
+=========================================
+Sidebar Navigation
+=========================================
 */
 
-document.addEventListener("click", (event) => {
+document.addEventListener("click", function (event) {
 
     switch (event.target.id) {
 
-        case "btnManageCourses":
+        case "menuDashboard":
 
-            showManageCourses();
-
+            showSection("dashboardSection");
+            loadDashboardCounts();
             break;
 
-        case "btnReviews":
+        case "menuCourses":
 
-            showReviews();
-
+            showSection("courseSection");
+            loadCourses();
             break;
 
-        case "btnUsers":
+        case "menuReviews":
 
-            showUsers();
+            showSection("reviewSection");
+            loadReviews();
+            break;
 
+        case "menuUsers":
+
+            showSection("userSection");
+            loadUsers();
             break;
 
     }
 
 });
 
-async function showManageCourses() {
+/*
+=========================================
+Show Section
+=========================================
+*/
 
-    console.log("Manage Courses clicked");
+function showSection(sectionId) {
 
-    alert("Manage Courses clicked");
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("courseSection").style.display = "none";
+    document.getElementById("reviewSection").style.display = "none";
+    document.getElementById("userSection").style.display = "none";
 
-    const section = document.getElementById("courseSection");
+    document.getElementById(sectionId).style.display = "block";
 
-    console.log(section);
+}
 
-    if (!section) {
+/*
+=========================================
+Dashboard Counts
+=========================================
+*/
 
-        alert("courseSection NOT FOUND");
+async function loadDashboardCounts() {
 
-        return;
+    const courses = await supabaseClient
+        .from("trainingdata")
+        .select("*", { count: "exact", head: true });
+
+    const users = await supabaseClient
+        .from("users")
+        .select("*", { count: "exact", head: true });
+
+    let reviewsCount = 0;
+
+    try {
+
+        const reviews = await supabaseClient
+            .from("reviews")
+            .select("*", { count: "exact", head: true });
+
+        reviewsCount = reviews.count || 0;
+
+    } catch {
+
+        reviewsCount = 0;
 
     }
 
-    section.style.display = "block";
+    document.getElementById("totalCourses").innerHTML =
+        courses.count || 0;
 
-    await loadCourses();
+    document.getElementById("totalUsers").innerHTML =
+        users.count || 0;
+
+    document.getElementById("totalReviews").innerHTML =
+        reviewsCount;
 
 }
+
 /*
-====================================
-Load Courses
-====================================
+=========================================
+Placeholder Functions
+=========================================
 */
 
 async function loadCourses() {
 
-    const tbody = document.getElementById("courseList");
-
-    tbody.innerHTML = "";
-
-    const { data, error } = await supabaseClient
-        .from("trainingdata")
-        .select("*")
-        .order("id", { ascending: false });
-
-    if (error) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5">${error.message}</td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    if (data.length === 0) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5">No courses found.</td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    data.forEach(course => {
-
-        tbody.innerHTML += `
-
-            <tr>
-
-                <td>${course.title}</td>
-
-                <td>${course.tech || ""}</td>
-
-                <td>
-
-                    <a
-                        href="${course.link}"
-                        target="_blank">
-
-                        Open
-
-                    </a>
-
-                </td>
-
-                <td>
-
-                    <button
-                        class="btn edit-btn"
-                        onclick="editCourse(${course.id})">
-
-                        Edit
-
-                    </button>
-
-                </td>
-
-                <td>
-
-                    <button
-                        class="btn delete-btn"
-                        onclick="deleteCourse(${course.id})">
-
-                        Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-        `;
-
-    });
-
-}
-/*
-====================================
-Delete Course
-====================================
-*/
-
-async function deleteCourse(id){
-
-if(
-
-!confirm("Delete this course?")
-
-){
-
-return;
-
-}
-
-const {error}=await supabaseClient
-
-.from("trainingdata")
-
-.delete()
-
-.eq("id",id);
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-loadCourses();
-
-}
-document.addEventListener(
-
-"click",
-
-function(event){
-
-if(
-
-event.target.id==="btnSaveCourse"
-
-){
-
-saveCourse();
-
-}
-
-});
-function showReviews() {
-
-    document.getElementById("adminContent").innerHTML = `
-
-        <h2>Review Management</h2>
-
-        <p>All visitor reviews will appear here.</p>
-
+    document.getElementById("courseList").innerHTML = `
+        <tr>
+            <td colspan="5">
+                Loading Courses...
+            </td>
+        </tr>
     `;
 
 }
 
-function showUsers() {
+async function loadReviews() {
 
-    document.getElementById("adminContent").innerHTML = `
+    document.getElementById("reviewList").innerHTML = `
+        <tr>
+            <td colspan="5">
+                Loading Reviews...
+            </td>
+        </tr>
+    `;
 
-        <h2>User Management</h2>
+}
 
-        <p>All logged-in users will appear here.</p>
+async function loadUsers() {
 
+    document.getElementById("userList").innerHTML = `
+        <tr>
+            <td colspan="6">
+                Loading Users...
+            </td>
+        </tr>
     `;
 
 }
