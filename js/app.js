@@ -121,17 +121,34 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTrainingData();
 
 });
-function openReviewModal(courseId,title){
+/*
+=========================================
+Open Review Modal
+=========================================
+*/
 
-document.getElementById("reviewCourseId").value=courseId;
+function openReviewModal(courseId, title) {
 
-document.getElementById("reviewCourseTitle").innerHTML=title;
+    // User must be logged in
+    if (!auth.currentUser) {
 
-document.getElementById("reviewRating").value=5;
+        alert("Please login first to submit a review.");
 
-document.getElementById("reviewText").value="";
+        return;
 
-document.getElementById("reviewModal").style.display="block";
+    }
+
+    currentCourseId = courseId;
+
+    document.getElementById("reviewCourseId").value = courseId;
+
+    document.getElementById("reviewCourseTitle").innerHTML = title;
+
+    document.getElementById("reviewRating").value = 5;
+
+    document.getElementById("reviewText").value = "";
+
+    document.getElementById("reviewModal").style.display = "block";
 
 }
 
@@ -142,5 +159,104 @@ if(event.target.id==="closeReviewModal"){
 document.getElementById("reviewModal").style.display="none";
 
 }
+
+});
+/*
+=========================================
+Submit Review
+=========================================
+*/
+
+document.addEventListener("click", async function (event) {
+
+    if (event.target.id !== "btnSubmitReview") return;
+
+    const user = auth.currentUser;
+
+    const courseId = document.getElementById("reviewCourseId").value;
+
+    const courseName = document.getElementById("reviewCourseTitle").innerHTML;
+
+    const rating = Number(document.getElementById("reviewRating").value);
+
+    const review = document.getElementById("reviewText").value.trim();
+
+    if (review === "") {
+
+        alert("Please write your review.");
+
+        return;
+
+    }
+
+    // Check if the user has already reviewed this course
+
+    const { data: existing } = await supabaseClient
+
+        .from("reviews")
+
+        .select("*")
+
+        .eq("course_id", courseId)
+
+        .eq("user_email", user.email)
+
+        .maybeSingle();
+
+    let error;
+
+    if (existing) {
+
+        ({ error } = await supabaseClient
+
+            .from("reviews")
+
+            .update({
+
+                rating: rating,
+
+                review: review
+
+            })
+
+            .eq("id", existing.id));
+
+    } else {
+
+        ({ error } = await supabaseClient
+
+            .from("reviews")
+
+            .insert({
+
+                course_id: courseId,
+
+                course_name: courseName,
+
+                user_email: user.email,
+
+                user_name: user.displayName,
+
+                user_photo: user.photoURL,
+
+                rating: rating,
+
+                review: review
+
+            }));
+
+    }
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    alert("Review saved successfully!");
+
+    document.getElementById("reviewModal").style.display = "none";
 
 });
