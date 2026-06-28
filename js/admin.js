@@ -1,5 +1,12 @@
 /*
 =========================================
+Global Variables
+=========================================
+*/
+
+let currentUser = null;
+/*
+=========================================
 Admin Dashboard
 =========================================
 */
@@ -13,6 +20,9 @@ auth.onAuthStateChanged(async (user) => {
 
     }
 
+    // Store logged-in user
+    currentUser = user;
+
     if (user.email !== ADMIN_EMAIL) {
 
         alert("Access Denied");
@@ -24,7 +34,6 @@ auth.onAuthStateChanged(async (user) => {
     loadDashboard();
 
 });
-
 /*
 =========================================
 Dashboard
