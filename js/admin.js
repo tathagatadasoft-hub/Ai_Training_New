@@ -335,9 +335,17 @@ async function loadReviews() {
 
 }
 
+/*
+==========================================================
+Load Users
+==========================================================
+*/
+
 async function loadUsers() {
 
-    document.getElementById("userList").innerHTML = `
+    const tbody = document.getElementById("userList");
+
+    tbody.innerHTML = `
         <tr>
             <td colspan="6">
                 Loading Users...
@@ -345,7 +353,154 @@ async function loadUsers() {
         </tr>
     `;
 
+    const { data, error } = await supabaseClient
+
+        .from("users")
+
+        .select("*")
+
+        .order("display_name");
+
+    if (error) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+
+                    ${error.message}
+
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    tbody.innerHTML = "";
+
+    if (data.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+
+                    No Users Found
+
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    data.forEach(user => {
+
+        tbody.innerHTML += `
+
+<tr>
+
+<td>
+
+<img
+
+src="${user.photo_url}"
+
+style="width:45px;height:45px;border-radius:50%;">
+
+</td>
+
+<td>
+
+${user.display_name}
+
+</td>
+
+<td>
+
+${user.email}
+
+</td>
+
+<td>
+
+${user.role}
+
+</td>
+
+<td>
+
+${new Date(user.last_login).toLocaleString()}
+
+</td>
+
+<td>
+
+<button
+
+class="btn delete-btn"
+
+onclick="deleteUser(${user.id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+    });
+
 }
+
+/*
+==========================================================
+Delete User
+==========================================================
+*/
+
+async function deleteUser(id) {
+
+    const confirmDelete = confirm(
+
+        "Are you sure you want to delete this user?"
+
+    );
+
+    if (!confirmDelete) {
+
+        return;
+
+    }
+
+    const { error } = await supabaseClient
+
+        .from("users")
+
+        .delete()
+
+        .eq("id", id);
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    alert("User deleted successfully.");
+
+    loadUsers();
+
+    loadDashboardCounts();
+
+}
+
 document.addEventListener("click",function(event){
 
 if(event.target.id==="btnSaveCourse"){
