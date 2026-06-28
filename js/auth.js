@@ -99,18 +99,34 @@ auth.onAuthStateChanged((user)=>{
 // Sync Firebase user to Supabase
 syncUserToSupabase(user);
         
-// Redirect only if user manually opens admin page without permission
-
 const path = window.location.pathname;
 
+// If someone tries to open the admin page
+if (path.endsWith("/admin.html")) {
+
+    if (user.email !== ADMIN_EMAIL) {
+
+        alert("Access Denied");
+
+        window.location.href = "index.html";
+
+        return;
+
+    }
+
+}
+
+// Login redirect only from the home page
 if (
-    path.endsWith("/admin.html") &&
-    user.email !== ADMIN_EMAIL
+    path.endsWith("/") ||
+    path.endsWith("/index.html")
 ) {
 
-    alert("Access Denied");
+    if (user.email === ADMIN_EMAIL) {
 
-    window.location.href = "profile.html";
+        window.location.href = "admin.html";
+
+    }
 
 }
     }
