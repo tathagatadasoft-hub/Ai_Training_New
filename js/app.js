@@ -1,4 +1,5 @@
 alert("app.js loaded");
+let currentCourseId = null;
 /*
 =========================================
 GitHub Training Portal
