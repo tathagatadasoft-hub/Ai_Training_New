@@ -89,7 +89,10 @@ auth.onAuthStateChanged((user)=>{
         console.log("Logged in");
 
         console.log(user.email);
-
+        
+// Sync Firebase user to Supabase
+syncUserToSupabase(user);
+        
 const path = window.location.pathname;
 
 // Only redirect from the home page
