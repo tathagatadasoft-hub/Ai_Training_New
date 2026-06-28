@@ -68,11 +68,27 @@ document.addEventListener("click", (event) => {
 
 });
 
-async function showManageCourses(){
+async function showManageCourses() {
 
-document.getElementById("courseSection").style.display="block";
+    console.log("Manage Courses clicked");
 
-loadCourses();
+    alert("Manage Courses clicked");
+
+    const section = document.getElementById("courseSection");
+
+    console.log(section);
+
+    if (!section) {
+
+        alert("courseSection NOT FOUND");
+
+        return;
+
+    }
+
+    section.style.display = "block";
+
+    await loadCourses();
 
 }
 /*
