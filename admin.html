@@ -5,11 +5,16 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Admin Dashboard</title>
 
+    <!-- Common CSS -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="css/admin.css">
 
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,175 +27,374 @@
 
 <body>
 
-<div id="site-header"></div>
+    <!-- Shared Header -->
+    <div id="site-header"></div>
 
-<div class="container">
+    <div class="admin-wrapper">
 
-    <h2 class="section-title">
+        <!-- ===========================
+             Sidebar
+        ============================ -->
 
-        Admin Dashboard
+        <aside class="sidebar">
 
-    </h2>
+            <div class="sidebar-title">
 
-    <div class="dashboard-grid">
+                <h2>Admin Panel</h2>
 
-        <div class="dashboard-card">
+            </div>
 
-            <h3>📚 Course Management</h3>
+            <button id="menuDashboard">
 
-            <p>Manage all training courses.</p>
-
-            <button id="btnManageCourses" class="btn">
-
-                Manage Courses
-
-            </button>
-
-        </div>
-
-        <div class="dashboard-card">
-
-            <h3>⭐ Review Management</h3>
-
-            <p>View all reviews submitted by users.</p>
-
-            <button id="btnReviews" class="btn">
-
-                View Reviews
+                📊 Dashboard
 
             </button>
 
-        </div>
+            <button id="menuCourses">
 
-        <div class="dashboard-card">
-
-            <h3>👤 User Management</h3>
-
-            <p>View all registered users.</p>
-
-            <button id="btnUsers" class="btn">
-
-                View Users
+                📚 Course Management
 
             </button>
 
-        </div>
+            <button id="menuReviews">
+
+                ⭐ Review Management
+
+            </button>
+
+            <button id="menuUsers">
+
+                👤 User Management
+
+            </button>
+
+        </aside>
+
+        <!-- ===========================
+             Main Content
+        ============================ -->
+
+        <main class="admin-content">
+
+            <h1>
+
+                Admin Dashboard
+
+            </h1>
+
+            <!-- Dashboard Statistics -->
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card">
+
+                    <h3>Total Courses</h3>
+
+                    <h2 id="totalCourses">
+
+                        0
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-card">
+
+                    <h3>Total Reviews</h3>
+
+                    <h2 id="totalReviews">
+
+                        0
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-card">
+
+                    <h3>Total Users</h3>
+
+                    <h2 id="totalUsers">
+
+                        0
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <!-- Dynamic Content -->
+
+            <div id="pageContent">
+
+                <div id="dashboardSection">
+
+                    <h2>
+
+                        Welcome Administrator 👋
+
+                    </h2>
+
+                    <br>
+
+                    <p>
+
+                        Welcome to your Training Portal.
+
+                    </p>
+
+                    <br>
+
+                    <p>
+
+                        Use the left menu to manage:
+
+                    </p>
+
+                    <ul>
+
+                        <li>Courses</li>
+
+                        <li>Reviews</li>
+
+                        <li>Users</li>
+
+                    </ul>
+
+                </div>
+
+                <!-- ===========================
+                     Course Management
+                ============================ -->
+
+                <div id="courseSection" style="display:none;">
+
+                    <h2>
+
+                        📚 Course Management
+
+                    </h2>
+
+                    <br>
+
+                    <input
+                        type="hidden"
+                        id="courseId">
+
+                    <label>
+
+                        Course Title
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="courseTitle"
+                        placeholder="Course Title">
+
+                    <br><br>
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+                    <textarea
+                        id="courseDesc"
+                        placeholder="Description"></textarea>
+
+                    <br><br>
+
+                    <label>
+
+                        Technology
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="courseTech"
+                        placeholder="Technology">
+
+                    <br><br>
+
+                    <label>
+
+                        Training Link
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="courseLink"
+                        placeholder="Training URL">
+
+                    <br><br>
+
+                    <button
+                        id="btnSaveCourse"
+                        class="btn">
+
+                        Save Course
+
+                    </button>
+
+                    <button
+                        id="btnCancelEdit"
+                        class="btn"
+                        style="display:none;">
+
+                        Cancel
+
+                    </button>
+
+                    <hr>
+
+                    <h3>
+
+                        Existing Courses
+
+                    </h3>
+
+                    <table class="course-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Title</th>
+
+                                <th>Technology</th>
+
+                                <th>Link</th>
+
+                                <th>Edit</th>
+
+                                <th>Delete</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="courseList">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- ===========================
+                     Review Management
+                ============================ -->
+
+                <div id="reviewSection" style="display:none;">
+
+                    <h2>
+
+                        ⭐ Review Management
+
+                    </h2>
+
+                    <br>
+
+                    <table class="course-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>User</th>
+
+                                <th>Course</th>
+
+                                <th>Rating</th>
+
+                                <th>Review</th>
+
+                                <th>Delete</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="reviewList">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- ===========================
+                     User Management
+                ============================ -->
+
+                <div id="userSection" style="display:none;">
+
+                    <h2>
+
+                        👤 User Management
+
+                    </h2>
+
+                    <br>
+
+                    <table class="course-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Photo</th>
+
+                                <th>Name</th>
+
+                                <th>Email</th>
+
+                                <th>Role</th>
+
+                                <th>Last Login</th>
+
+                                <th>Delete</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="userList">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </main>
 
     </div>
 
-    <br>
+    <!-- Shared Footer -->
 
-    <div id="adminContent">
+    <div id="site-footer"></div>
 
-    <div id="courseSection" style="display:none;">
+    <!-- Scripts -->
 
-    <h2>📚 Course Management</h2>
+    <script src="services/supabase.js"></script>
 
-    <br>
+    <script src="js/firebase.js"></script>
 
-    <input type="hidden" id="courseId">
+    <script src="js/auth.js"></script>
 
-    <label><strong>Course Title *</strong></label>
+    <script src="components/header.js"></script>
 
-    <input
-        id="courseTitle"
-        type="text"
-        placeholder="Course Title">
+    <script src="components/footer.js"></script>
 
-    <br><br>
-
-    <label><strong>Description</strong></label>
-
-    <textarea
-        id="courseDesc"
-        placeholder="Course Description"></textarea>
-
-    <br><br>
-
-    <label><strong>Technology</strong></label>
-
-    <input
-        id="courseTech"
-        type="text"
-        placeholder="Technology">
-
-    <br><br>
-
-    <label><strong>Training Link</strong></label>
-
-    <input
-        id="courseLink"
-        type="text"
-        placeholder="https://">
-
-    <br><br>
-
-    <button
-        id="btnSaveCourse"
-        class="btn">
-
-        Save Course
-
-    </button>
-
-    <button
-        id="btnCancelEdit"
-        class="btn"
-        style="display:none;background:#777;">
-
-        Cancel
-
-    </button>
-
-    <hr>
-
-    <h3>Existing Courses</h3>
-
-    <table class="course-table">
-
-        <thead>
-
-            <tr>
-
-                <th>Title</th>
-
-                <th>Technology</th>
-
-                <th>Link</th>
-
-                <th>Edit</th>
-
-                <th>Delete</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="courseList">
-
-        </tbody>
-
-    </table>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="site-footer"></div>
-
-<script src="services/supabase.js"></script>
-
-<script src="js/firebase.js"></script>
-
-<script src="js/auth.js"></script>
-
-<script src="components/header.js"></script>
-
-<script src="components/footer.js"></script>
-
-<script src="js/admin.js"></script>
+    <script src="js/admin.js"></script>
 
 </body>
 
