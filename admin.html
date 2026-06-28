@@ -84,52 +84,95 @@
 
     <div id="courseSection" style="display:none;">
 
-        <h2>Course Management</h2>
+    <h2>📚 Course Management</h2>
 
-        <br>
+    <br>
 
-        <input
-            id="courseTitle"
-            type="text"
-            placeholder="Course Title">
+    <input type="hidden" id="courseId">
 
-        <br><br>
+    <label><strong>Course Title *</strong></label>
 
-        <textarea
-            id="courseDesc"
-            placeholder="Course Description"></textarea>
+    <input
+        id="courseTitle"
+        type="text"
+        placeholder="Course Title">
 
-        <br><br>
+    <br><br>
 
-        <input
-            id="courseTech"
-            type="text"
-            placeholder="Technology">
+    <label><strong>Description</strong></label>
 
-        <br><br>
+    <textarea
+        id="courseDesc"
+        placeholder="Course Description"></textarea>
 
-        <input
-            id="courseLink"
-            type="text"
-            placeholder="Training Link">
+    <br><br>
 
-        <br><br>
+    <label><strong>Technology</strong></label>
 
-        <button
-            id="btnSaveCourse"
-            class="btn">
+    <input
+        id="courseTech"
+        type="text"
+        placeholder="Technology">
 
-            Save Course
+    <br><br>
 
-        </button>
+    <label><strong>Training Link</strong></label>
 
-        <hr>
+    <input
+        id="courseLink"
+        type="text"
+        placeholder="https://">
 
-        <div id="courseList">
+    <br><br>
 
-        </div>
+    <button
+        id="btnSaveCourse"
+        class="btn">
 
-    </div>
+        Save Course
+
+    </button>
+
+    <button
+        id="btnCancelEdit"
+        class="btn"
+        style="display:none;background:#777;">
+
+        Cancel
+
+    </button>
+
+    <hr>
+
+    <h3>Existing Courses</h3>
+
+    <table class="course-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Title</th>
+
+                <th>Technology</th>
+
+                <th>Link</th>
+
+                <th>Edit</th>
+
+                <th>Delete</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="courseList">
+
+        </tbody>
+
+    </table>
+
+</div>
 
 </div>
 
