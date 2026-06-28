@@ -1,3 +1,4 @@
+alert("app.js loaded");
 /*
 =========================================
 GitHub Training Portal
