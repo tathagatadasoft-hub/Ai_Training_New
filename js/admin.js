@@ -432,33 +432,57 @@ function renderUsers(users) {
         }
 
         // Normal users
-        else {
+else {
 
-            if (user.status === "disabled") {
+    if (user.status === "disabled") {
 
-                actionButton = `
-                    <button
-                        class="btn"
-                        onclick="toggleUserStatus(${user.id},'active')">
-                        Enable
-                    </button>
-                `;
+        actionButton = `
 
-            }
+<button
+class="btn"
+onclick="viewUser(${user.id})">
 
-            else {
+View
 
-                actionButton = `
-                    <button
-                        class="btn delete-btn"
-                        onclick="toggleUserStatus(${user.id},'disabled')">
-                        Disable
-                    </button>
-                `;
+</button>
 
-            }
+<button
+class="btn"
+onclick="toggleUserStatus(${user.id},'active')">
 
-        }
+Enable
+
+</button>
+
+`;
+
+    }
+
+    else {
+
+        actionButton = `
+
+<button
+class="btn"
+onclick="viewUser(${user.id})">
+
+View
+
+</button>
+
+<button
+class="btn delete-btn"
+onclick="toggleUserStatus(${user.id},'disabled')">
+
+Disable
+
+</button>
+
+`;
+
+    }
+
+}
 
         html += `
 
@@ -511,6 +535,50 @@ async function toggleUserStatus(id, status) {
     }
 
     loadUsers();
+
+}
+
+async function viewUser(id){
+
+const {data,error}=await supabaseClient
+
+.from("users")
+
+.select("*")
+
+.eq("id",id)
+
+.single();
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+document.getElementById("modalPhoto").src=data.photo_url;
+
+document.getElementById("modalName").innerHTML=data.display_name;
+
+document.getElementById("modalEmail").innerHTML=data.email;
+
+document.getElementById("modalRole").innerHTML=data.role;
+
+document.getElementById("modalStatus").innerHTML=data.status;
+
+document.getElementById("modalUID").innerHTML=data.firebase_uid;
+
+document.getElementById("modalLastLogin").innerHTML=
+
+data.last_login
+
+? new Date(data.last_login).toLocaleString()
+
+: "-";
+
+document.getElementById("userModal").style.display="block";
 
 }
 
@@ -587,5 +655,20 @@ document.addEventListener("input", async function (event) {
     );
 
     renderUsers(filtered);
+
+});
+document.addEventListener("click",function(event){
+
+if(event.target.id==="closeUserModal"){
+
+document.getElementById("userModal").style.display="none";
+
+}
+
+if(event.target.id==="userModal"){
+
+document.getElementById("userModal").style.display="none";
+
+}
 
 });
