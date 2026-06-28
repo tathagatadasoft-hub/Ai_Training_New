@@ -49,6 +49,80 @@
 
 </div>
 
+<!-- ============================= -->
+<!-- Review Modal -->
+<!-- ============================= -->
+
+<div id="reviewModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+            id="closeReviewModal"
+            class="close">
+
+            &times;
+
+        </span>
+
+        <h2 id="reviewCourseTitle">
+
+        </h2>
+
+        <input
+            type="hidden"
+            id="reviewCourseId">
+
+        <br>
+
+        <label>
+
+            Rating
+
+        </label>
+
+        <select id="reviewRating">
+
+            <option value="5">⭐⭐⭐⭐⭐</option>
+
+            <option value="4">⭐⭐⭐⭐</option>
+
+            <option value="3">⭐⭐⭐</option>
+
+            <option value="2">⭐⭐</option>
+
+            <option value="1">⭐</option>
+
+        </select>
+
+        <br><br>
+
+        <textarea
+
+            id="reviewText"
+
+            placeholder="Write your review..."
+
+            rows="6">
+
+        </textarea>
+
+        <br><br>
+
+        <button
+
+            class="btn"
+
+            id="btnSubmitReview">
+
+            Submit Review
+
+        </button>
+
+    </div>
+
+</div>
+    
 <div id="site-footer"></div>
 
 <script src="services/supabase.js"></script>
