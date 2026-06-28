@@ -119,3 +119,26 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTrainingData();
 
 });
+function openReviewModal(courseId,title){
+
+document.getElementById("reviewCourseId").value=courseId;
+
+document.getElementById("reviewCourseTitle").innerHTML=title;
+
+document.getElementById("reviewRating").value=5;
+
+document.getElementById("reviewText").value="";
+
+document.getElementById("reviewModal").style.display="block";
+
+}
+
+document.addEventListener("click",function(event){
+
+if(event.target.id==="closeReviewModal"){
+
+document.getElementById("reviewModal").style.display="none";
+
+}
+
+});
