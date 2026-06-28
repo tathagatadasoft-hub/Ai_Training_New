@@ -1,3 +1,5 @@
+alert("admin.js loaded");
+
 /*
 =====================================
 Admin Dashboard
