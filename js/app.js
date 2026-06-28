@@ -71,6 +71,16 @@ async function loadTrainingData() {
 
                     </a>
 
+<br><br>
+
+<button
+class="btn review-btn"
+onclick="openReviewModal(${item.id},'${item.title}')">
+
+⭐ Write Review
+
+</button>
+
                 </div>
 
             `;
