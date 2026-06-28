@@ -404,15 +404,161 @@ function clearCourseForm(){
 
 }
 
+/*
+==========================================================
+Load Reviews
+==========================================================
+*/
+
 async function loadReviews() {
 
-    document.getElementById("reviewList").innerHTML = `
+    const tbody = document.getElementById("reviewList");
+
+    tbody.innerHTML = `
         <tr>
-            <td colspan="5">
+            <td colspan="6">
                 Loading Reviews...
             </td>
         </tr>
     `;
+
+    const { data, error } = await supabaseClient
+
+        .from("reviews")
+
+        .select("*")
+
+        .order("created_at", { ascending: false });
+
+    if (error) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    ${error.message}
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    if (!data || data.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    No Reviews Found
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    tbody.innerHTML = "";
+
+    data.forEach(review => {
+
+        tbody.innerHTML += `
+
+<tr>
+
+<td>
+
+<div style="display:flex;align-items:center;gap:10px;">
+
+<img
+
+src="${review.user_photo}"
+
+style="width:45px;height:45px;border-radius:50%;">
+
+<span>
+
+${review.user_name}
+
+</span>
+
+</div>
+
+</td>
+
+<td>
+
+${review.course_name}
+
+</td>
+
+<td>
+
+⭐ ${review.rating}/5
+
+</td>
+
+<td>
+
+${review.review}
+
+</td>
+
+<td>
+
+<button
+
+class="btn delete-btn"
+
+onclick="deleteReview(${review.id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+    });
+
+}
+
+/*
+==========================================================
+Delete Review
+==========================================================
+*/
+
+async function deleteReview(id){
+
+    if(!confirm("Delete this review?")){
+
+        return;
+
+    }
+
+    const { error } = await supabaseClient
+
+        .from("reviews")
+
+        .delete()
+
+        .eq("id", id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    loadReviews();
+
+    loadDashboardCounts();
 
 }
 
