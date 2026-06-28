@@ -255,6 +255,47 @@ Delete
 
 }
 /*
+==========================================================
+Edit Course
+==========================================================
+*/
+
+async function editCourse(id){
+
+    const {data,error}=await supabaseClient
+
+    .from("trainingdata")
+
+    .select("*")
+
+    .eq("id",id)
+
+    .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    document.getElementById("courseId").value=data.id;
+
+    document.getElementById("courseTitle").value=data.title;
+
+    document.getElementById("courseDesc").value=data.desc;
+
+    document.getElementById("courseTech").value=data.tech;
+
+    document.getElementById("courseLink").value=data.link;
+
+    document.getElementById("btnSaveCourse").innerHTML="Update Course";
+
+    document.getElementById("btnCancelEdit").style.display="inline-block";
+
+}
+/*
 =========================================
 Save Course
 =========================================
@@ -278,21 +319,49 @@ async function saveCourse() {
 
     }
 
-    const { error } = await supabaseClient
+    const courseId=document.getElementById("courseId").value;
 
-        .from("trainingdata")
+let error;
 
-        .insert({
+if(courseId){
 
-            title,
+    ({error}=await supabaseClient
 
-            desc,
+    .from("trainingdata")
 
-            tech,
+    .update({
 
-            link
+        title,
 
-        });
+        desc,
+
+        tech,
+
+        link
+
+    })
+
+    .eq("id",courseId));
+
+}else{
+
+    ({error}=await supabaseClient
+
+    .from("trainingdata")
+
+    .insert({
+
+        title,
+
+        desc,
+
+        tech,
+
+        link
+
+    }));
+
+}
 
     if (error) {
 
@@ -319,18 +388,21 @@ Clear Form
 
 function clearCourseForm(){
 
-document.getElementById("courseId").value="";
+    document.getElementById("courseId").value="";
 
-document.getElementById("courseTitle").value="";
+    document.getElementById("courseTitle").value="";
 
-document.getElementById("courseDesc").value="";
+    document.getElementById("courseDesc").value="";
 
-document.getElementById("courseTech").value="";
+    document.getElementById("courseTech").value="";
 
-document.getElementById("courseLink").value="";
+    document.getElementById("courseLink").value="";
+
+    document.getElementById("btnSaveCourse").innerHTML="Save Course";
+
+    document.getElementById("btnCancelEdit").style.display="none";
 
 }
-
 
 async function loadReviews() {
 
@@ -341,6 +413,58 @@ async function loadReviews() {
             </td>
         </tr>
     `;
+
+}
+
+/*
+==========================================================
+Cancel Edit
+==========================================================
+*/
+
+function cancelEdit(){
+
+    clearCourseForm();
+
+    document.getElementById("btnSaveCourse").innerHTML="Save Course";
+
+    document.getElementById("btnCancelEdit").style.display="none";
+
+}
+
+/*
+==========================================================
+Delete Course
+==========================================================
+*/
+
+async function deleteCourse(id){
+
+    if(!confirm("Delete this course?")){
+
+        return;
+
+    }
+
+    const {error}=await supabaseClient
+
+    .from("trainingdata")
+
+    .delete()
+
+    .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    loadCourses();
+
+    loadDashboardCounts();
 
 }
 
