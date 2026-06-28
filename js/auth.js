@@ -151,3 +151,86 @@ document.addEventListener("click",(event)=>{
     }
 
 });
+/*
+=========================================
+Sync User To Supabase
+=========================================
+*/
+
+async function syncUserToSupabase(user) {
+
+    const { data, error } = await supabaseClient
+
+        .from("users")
+
+        .select("*")
+
+        .eq("firebase_uid", user.uid)
+
+        .single();
+
+    if (error && error.code !== "PGRST116") {
+
+        console.error(error);
+
+        return;
+
+    }
+
+    // User already exists
+    if (data) {
+
+        const { error: updateError } = await supabaseClient
+
+            .from("users")
+
+            .update({
+
+                display_name: user.displayName,
+
+                photo_url: user.photoURL,
+
+                last_login: new Date().toISOString()
+
+            })
+
+            .eq("firebase_uid", user.uid);
+
+        if (updateError) {
+
+            console.error(updateError);
+
+        }
+
+        return;
+
+    }
+
+    // New User
+    const { error: insertError } = await supabaseClient
+
+        .from("users")
+
+        .insert({
+
+            firebase_uid: user.uid,
+
+            display_name: user.displayName,
+
+            email: user.email,
+
+            photo_url: user.photoURL,
+
+            role: "user",
+
+            last_login: new Date().toISOString()
+
+        });
+
+    if (insertError) {
+
+        console.error(insertError);
+
+    }
+
+}
