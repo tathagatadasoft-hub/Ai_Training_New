@@ -52,6 +52,12 @@ Authentication State
 
 auth.onAuthStateChanged((user)=>{
 
+    console.log("Current Page:", window.location.pathname);
+
+    console.log("User:", user ? user.email : "No User");
+
+    console.log("Auth.js Running");
+    
     const loginBtn=document.getElementById("loginBtn");
 
     const userInfo=document.getElementById("userInfo");
