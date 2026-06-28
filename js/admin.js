@@ -347,29 +347,20 @@ async function loadUsers() {
 
     tbody.innerHTML = `
         <tr>
-            <td colspan="6">
-                Loading Users...
-            </td>
+            <td colspan="7">Loading Users...</td>
         </tr>
     `;
 
     const { data, error } = await supabaseClient
-
         .from("users")
-
         .select("*")
-
         .order("display_name");
 
     if (error) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="6">
-
-                    ${error.message}
-
-                </td>
+                <td colspan="7">${error.message}</td>
             </tr>
         `;
 
@@ -377,17 +368,11 @@ async function loadUsers() {
 
     }
 
-    tbody.innerHTML = "";
-
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="6">
-
-                    No Users Found
-
-                </td>
+                <td colspan="7">No Users Found</td>
             </tr>
         `;
 
@@ -395,65 +380,137 @@ async function loadUsers() {
 
     }
 
-    data.forEach(user => {
+    renderUsers(data);
 
-        tbody.innerHTML += `
+}
+function renderUsers(users) {
+
+    const tbody = document.getElementById("userList");
+
+    let html = "";
+
+    users.forEach(user => {
+
+        const roleBadge = user.role === "admin"
+            ? "🟣 Admin"
+            : "🔵 User";
+
+        const statusBadge = user.status === "disabled"
+            ? "🔴 Disabled"
+            : "🟢 Active";
+
+        const lastLogin = user.last_login
+            ? new Date(user.last_login).toLocaleString()
+            : "-";
+
+        let actionButton = "";
+
+        // Logged in admin
+        if (user.email === currentUser.email) {
+
+            actionButton = `
+                <button
+                    class="btn"
+                    disabled>
+                    Current User
+                </button>
+            `;
+
+        }
+
+        // Other admins
+        else if (user.role === "admin") {
+
+            actionButton = `
+                <button
+                    class="btn"
+                    disabled>
+                    Protected
+                </button>
+            `;
+
+        }
+
+        // Normal users
+        else {
+
+            if (user.status === "disabled") {
+
+                actionButton = `
+                    <button
+                        class="btn"
+                        onclick="toggleUserStatus(${user.id},'active')">
+                        Enable
+                    </button>
+                `;
+
+            }
+
+            else {
+
+                actionButton = `
+                    <button
+                        class="btn delete-btn"
+                        onclick="toggleUserStatus(${user.id},'disabled')">
+                        Disable
+                    </button>
+                `;
+
+            }
+
+        }
+
+        html += `
 
 <tr>
 
 <td>
 
 <img
-
 src="${user.photo_url}"
-
 style="width:45px;height:45px;border-radius:50%;">
 
 </td>
 
-<td>
+<td>${user.display_name}</td>
 
-${user.display_name}
+<td>${user.email}</td>
 
-</td>
+<td>${roleBadge}</td>
 
-<td>
+<td>${statusBadge}</td>
 
-${user.email}
+<td>${lastLogin}</td>
 
-</td>
-
-<td>
-
-${user.role}
-
-</td>
-
-<td>
-
-${new Date(user.last_login).toLocaleString()}
-
-</td>
-
-<td>
-
-<button
-
-class="btn delete-btn"
-
-onclick="deleteUser(${user.id})">
-
-Delete
-
-</button>
-
-</td>
+<td>${actionButton}</td>
 
 </tr>
 
 `;
 
     });
+
+    tbody.innerHTML = html;
+
+}
+async function toggleUserStatus(id, status) {
+
+    const { error } = await supabaseClient
+        .from("users")
+        .update({
+            status: status
+        })
+        .eq("id", id);
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    loadUsers();
 
 }
 
@@ -508,5 +565,27 @@ if(event.target.id==="btnSaveCourse"){
 saveCourse();
 
 }
+
+});
+document.addEventListener("input", async function (event) {
+
+    if (event.target.id !== "userSearch") return;
+
+    const keyword = event.target.value.toLowerCase();
+
+    const { data } = await supabaseClient
+        .from("users")
+        .select("*")
+        .order("display_name");
+
+    const filtered = data.filter(user =>
+
+        user.display_name.toLowerCase().includes(keyword) ||
+
+        user.email.toLowerCase().includes(keyword)
+
+    );
+
+    renderUsers(filtered);
 
 });
