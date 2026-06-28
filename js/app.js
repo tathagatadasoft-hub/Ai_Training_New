@@ -1,4 +1,3 @@
-alert("app.js loaded");
 let currentCourseId = null;
 /*
 =========================================
